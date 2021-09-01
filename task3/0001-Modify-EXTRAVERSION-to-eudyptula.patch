@@ -1,0 +1,29 @@
+From 3e10a2c052fa74af1fc99c2388a99c92f31f89ba Mon Sep 17 00:00:00 2001
+From: Abdun Nihaal <abdun.nihaal@gmail.com>
+Date: Wed, 1 Sep 2021 19:27:13 +0530
+Subject: [PATCH] Modify EXTRAVERSION to eudyptula
+
+Adds eudyptula to the EXTRAVERSION field to modify the name of the
+built kernel.
+
+Signed-off-by: Abdun Nihaal <abdun.nihaal@gmail.com>
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index efa9bd36b158..77b556758770 100644
+--- a/Makefile
++++ b/Makefile
+@@ -2,7 +2,7 @@
+ VERSION = 5
+ PATCHLEVEL = 14
+ SUBLEVEL = 0
+-EXTRAVERSION = -rc7
++EXTRAVERSION = -eudyptula
+ NAME = Opossums on Parade
+ 
+ # *DOCUMENTATION*
+-- 
+2.29.2
+
