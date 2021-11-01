@@ -11,19 +11,19 @@
   # Now the character device will be present in /dev/eudyptula
   ```
 
-- Read from character device. It will return "nihaal"
+- Read from character device. It will return "1234567"
   ```bash
   cat /dev/eudyptula
-  # nihaal
+  # 1234567
   ```
 
-- Write to character device. It will return "Invalid argument" error for everything except "nihaal"
+- Write to character device. It will return "Invalid argument" error for everything except "1234567"
   ```bash
   echo -n "hello" > /dev/eudyptula
   # -bash: echo: write error: Invalid argument
   echo $?
   # 1
-  echo -n "nihaal" > /dev/eudyptula
+  echo -n "1234567" > /dev/eudyptula
   echo $?
   # 0
   ```

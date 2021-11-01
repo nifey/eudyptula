@@ -19,7 +19,7 @@ MODULE_VERSION("1.0");
 #define FOO_FILENAME "foo"
 
 // ID returned by device when read
-#define ID	"nihaal"
+#define ID	"1234567"
 // id file Permissions : Allow read and writes from anyone (User, Group, Others)
 #define ID_PERMISSIONS (S_IRUGO|S_IWUGO)
 // jiffies file Permissions : Allow only read from anyone (User, Group, Others)

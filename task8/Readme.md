@@ -22,7 +22,7 @@
     - Read from id file. It will return the ID
       ```bash
       cat /sys/kernel/debug/eudyptula/id
-      # nihaal
+      # 1234567
       ```
 
     - Write to character device. It will return "Invalid argument" error for everything except the correct ID
@@ -31,7 +31,7 @@
       # -bash: echo: write error: Invalid argument
       echo $?
       # 1
-      echo -n "nihaal" > /sys/kernel/debug/eudyptula/id
+      echo -n "1234567" > /sys/kernel/debug/eudyptula/id
       echo $?
       # 0
       ```

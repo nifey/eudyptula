@@ -11,7 +11,7 @@ MODULE_DESCRIPTION("Playing with SysFS");
 MODULE_VERSION("1.0");
 
 // ID returned by device when read
-#define ID	"nihaal"
+#define ID	"1234567"
 
 static char *k_id, *foo_buf;
 static int k_idlen;

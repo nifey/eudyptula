@@ -17,7 +17,7 @@ MODULE_VERSION("1.0");
 // Permissions : Allow read and writes from anyone (User, Group, Others)
 #define DEVICE_PERMISSIONS (S_IRUGO|S_IWUGO)
 // ID returned by device when read
-#define ID	"nihaal"
+#define ID	"1234567"
 
 static char *k_id;
 static int k_idlen;
