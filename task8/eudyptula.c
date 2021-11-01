@@ -97,7 +97,7 @@ ssize_t foo_write (struct file *filp, const char __user * buf, size_t n, loff_t 
 	down_write(&foo_rwlock);
 	memset(foo_buf, 0, PAGE_SIZE);
 	len = (n > PAGE_SIZE)? PAGE_SIZE: n;
-	ret = copy_from_user(foo_buf, buf, n);
+	ret = copy_from_user(foo_buf, buf, len);
 	len = len - ret;
 	*f_pos += len;
 	up_write(&foo_rwlock);
