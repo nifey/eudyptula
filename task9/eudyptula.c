@@ -110,6 +110,7 @@ static int __init eudyptula_init(void)
 		k_idlen = strlen(k_id);
 	} else {
 		printk(KERN_ERR "eudyptula: Cannot allocate memory for id file\n");
+		kobject_put(eudyptula_kobj);
 		return -ENOMEM;
 	}
 
@@ -117,12 +118,17 @@ static int __init eudyptula_init(void)
 	foo_buf = (char*) kzalloc(PAGE_SIZE, GFP_KERNEL);
 	if (!foo_buf) {
 		printk(KERN_ERR "eudyptula: Cannot allocate memory for foo file\n");
+		kfree(k_id);
+		kobject_put(eudyptula_kobj);
 		return -ENOMEM;
 	}
 
 	retval = sysfs_create_group(eudyptula_kobj, &attr_group);
-	if (retval)
+	if (retval) {
+		kfree(k_id);
+		kfree(foo_buf);
 		kobject_put(eudyptula_kobj);
+	}
 
 	return 0;
 }
