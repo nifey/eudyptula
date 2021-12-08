@@ -57,7 +57,7 @@ void identity_print(void)
 	struct identity *iter;
 
 	list_for_each_entry(iter, &identity_list, node) {
-		printk(KERN_DEBUG "%d: %s\n", iter->id, iter->name);
+		pr_debug("%d: %s\n", iter->id, iter->name);
 	}
 }
 
@@ -65,24 +65,24 @@ static int __init list_init(void)
 {
 	struct identity *temp;
 
-	printk(KERN_DEBUG "Vanakkam\n");
+	pr_debug("Vanakkam\n");
 	identity_create("Aswin", 1);
 	identity_create("Allwin", 2);
 	identity_create("Akash", 3);
 	identity_create("Aravindhan", 10);
 
 	temp = identity_find(3);
-	printk(KERN_DEBUG "id 3 = %s\n", temp->name);
+	pr_debug("id 3 = %s\n", temp->name);
 
 	temp = identity_find(42);
 	if (temp == NULL)
-		printk(KERN_DEBUG "id 42 not found\n");
+		pr_debug("id 42 not found\n");
 
-	printk(KERN_DEBUG "Before deleting 1 and 2\n");
+	pr_debug("Before deleting 1 and 2\n");
 	identity_print();
 	identity_destroy(2);
 	identity_destroy(1);
-	printk(KERN_DEBUG "After deleting 1 and 2\n");
+	pr_debug("After deleting 1 and 2\n");
 	identity_print();
 	identity_destroy(10);
 	identity_destroy(42);
@@ -92,7 +92,7 @@ static int __init list_init(void)
 
 static void __exit list_exit(void)
 {
-	printk(KERN_DEBUG "Ta Ta\n");
+	pr_debug("Ta Ta\n");
 }
 
 module_init(list_init);
