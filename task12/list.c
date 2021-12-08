@@ -47,6 +47,7 @@ void identity_destroy(int id)
 	list_for_each_entry(iter, &identity_list, node) {
 		if (iter->id == id) {
 			list_del(&iter->node);
+			kfree(iter);
 			return;
 		}
 	}
