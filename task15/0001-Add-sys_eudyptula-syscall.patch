@@ -1,0 +1,129 @@
+From 9bf9c46ddcf44dcdd9bc61657fe29c82d11170a3 Mon Sep 17 00:00:00 2001
+From: Abdun Nihaal <abdun.nihaal@gmail.com>
+Date: Fri, 17 Dec 2021 19:00:21 +0530
+Subject: [PATCH] Add sys_eudyptula syscall
+
+The new syscall sys_eudyptula will take two integers, combine them into
+a 64 bit value and compare it with the id 1234567.
+If the values are the same, it returns the id.
+Otherwise it returns invalid argument error.
+
+Signed-off-by: Abdun Nihaal <abdun.nihaal@gmail.com>
+---
+ arch/x86/entry/syscalls/syscall_32.tbl |  1 +
+ arch/x86/entry/syscalls/syscall_64.tbl |  1 +
+ include/linux/syscalls.h               |  1 +
+ include/uapi/asm-generic/unistd.h      |  4 +++-
+ kernel/Makefile                        |  2 +-
+ kernel/eudyptula.c                     | 23 +++++++++++++++++++++++
+ kernel/sys_ni.c                        |  1 +
+ 7 files changed, 31 insertions(+), 2 deletions(-)
+ create mode 100644 kernel/eudyptula.c
+
+diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
+index 960a021d543e..158d529e6732 100644
+--- a/arch/x86/entry/syscalls/syscall_32.tbl
++++ b/arch/x86/entry/syscalls/syscall_32.tbl
+@@ -453,3 +453,4 @@
+ 446	i386	landlock_restrict_self	sys_landlock_restrict_self
+ 447	i386	memfd_secret		sys_memfd_secret
+ 448	i386	process_mrelease	sys_process_mrelease
++449	i386	eudyptula		sys_eudyptula
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+index 18b5500ea8bf..802ae32bd666 100644
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -370,6 +370,7 @@
+ 446	common	landlock_restrict_self	sys_landlock_restrict_self
+ 447	common	memfd_secret		sys_memfd_secret
+ 448	common	process_mrelease	sys_process_mrelease
++449	common	eudyptula		sys_eudyptula
+ 
+ #
+ # Due to a historical design error, certain syscalls are numbered differently
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index 252243c7783d..262e80c544e6 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -1265,6 +1265,7 @@ asmlinkage long sys_mmap_pgoff(unsigned long addr, unsigned long len,
+ 			unsigned long fd, unsigned long pgoff);
+ asmlinkage long sys_old_mmap(struct mmap_arg_struct __user *arg);
+ 
++asmlinkage long sys_eudyptula(int high_id, int low_id);
+ 
+ /*
+  * Not a real system call, but a placeholder for syscalls which are
+diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
+index 1c5fb86d455a..154bb8712829 100644
+--- a/include/uapi/asm-generic/unistd.h
++++ b/include/uapi/asm-generic/unistd.h
+@@ -879,9 +879,11 @@ __SYSCALL(__NR_memfd_secret, sys_memfd_secret)
+ #endif
+ #define __NR_process_mrelease 448
+ __SYSCALL(__NR_process_mrelease, sys_process_mrelease)
++#define __NR_eudyptula 449
++__SYSCALL(__NR_eudyptula, sys_eudyptula)
+ 
+ #undef __NR_syscalls
+-#define __NR_syscalls 449
++#define __NR_syscalls 450
+ 
+ /*
+  * 32 bit systems traditionally used different
+diff --git a/kernel/Makefile b/kernel/Makefile
+index 4df609be42d0..4711028c4c3f 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -10,7 +10,7 @@ obj-y     = fork.o exec_domain.o panic.o \
+ 	    extable.o params.o \
+ 	    kthread.o sys_ni.o nsproxy.o \
+ 	    notifier.o ksysfs.o cred.o reboot.o \
+-	    async.o range.o smpboot.o ucount.o regset.o
++	    async.o range.o smpboot.o ucount.o regset.o eudyptula.o
+ 
+ obj-$(CONFIG_USERMODE_DRIVER) += usermode_driver.o
+ obj-$(CONFIG_MODULES) += kmod.o
+diff --git a/kernel/eudyptula.c b/kernel/eudyptula.c
+new file mode 100644
+index 000000000000..40310d13f2c8
+--- /dev/null
++++ b/kernel/eudyptula.c
+@@ -0,0 +1,23 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * sys_eudyptula() takes two 32 bit values, combines them into
++ * a 64 bit value and compares it with the id "1234567"
++ */
++#include <linux/unistd.h>
++#include <linux/syscalls.h>
++#include <linux/errno.h>
++
++int ksys_eudyptula(int high_id, int low_id)
++{
++	long id;
++
++	id = (((long)high_id) << 32) | low_id;
++	if (id == 1234567)
++		return id;
++	return -EINVAL;
++}
++
++SYSCALL_DEFINE2(eudyptula, int, high_id, int, low_id)
++{
++	return ksys_eudyptula(high_id, low_id);
++}
+diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
+index f43d89d92860..824c97d5d7ed 100644
+--- a/kernel/sys_ni.c
++++ b/kernel/sys_ni.c
+@@ -303,6 +303,7 @@ COND_SYSCALL(recvmmsg);
+ COND_SYSCALL(recvmmsg_time32);
+ COND_SYSCALL_COMPAT(recvmmsg_time32);
+ COND_SYSCALL_COMPAT(recvmmsg_time64);
++COND_SYSCALL(eudyptula);
+ 
+ /*
+  * Architecture specific syscalls: see further below
+-- 
+2.34.1
+
